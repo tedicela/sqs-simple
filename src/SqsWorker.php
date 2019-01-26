@@ -165,7 +165,7 @@ class SqsWorker{
             throw new \Exception("No SQS client defined");
         }
 
-        $result = $this->SqsClient->changeMessageVisibilityBatch([
+        $result = $this->SqsClient->changeMessageVisibility([
             // VisibilityTimeout is required
             'VisibilityTimeout' => 0,
             'QueueUrl' => $this->queueUrl, // REQUIRED
