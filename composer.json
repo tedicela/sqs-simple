@@ -1,0 +1,17 @@
+{
+    "name": "tedicela/sqs-simple",
+    "description": "PHP package for consuming AWS SQS queue in the simple way",
+    "type": "library",
+    "require": {
+        "php": ">=5.5.9",
+        "aws/aws-sdk-php": "^3.87"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tedi Cela",
+            "email": "tedicela@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
