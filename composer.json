@@ -13,5 +13,10 @@
             "email": "tedicela@gmail.com"
         }
     ],
+    "autoload":{
+        "psr-4":{
+            "SqsSimple\\": "src/"
+        }
+    },
     "minimum-stability": "stable"
 }
