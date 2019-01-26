@@ -42,8 +42,10 @@ class SqsWorker{
     public function listen($queueUrl, $workerProcess=false){
         
         $this->queueUrl = $queueUrl;
-        if($workerProcess != false){
-            $this->workerProcess = $workerProcess;
+        
+        $this->workerProcess = $workerProcess;
+        if($this->workerProcess === false){
+            throw new \Exception("WorkerProcess not found");
         }
 
         $this->printHeader();
@@ -67,10 +69,6 @@ class SqsWorker{
                     //Step 3: Should work these messages
                     for ($i = 0; $i < count($messages); $i++) {
                         
-                        if($this->workerProcess == false){
-                            throw new \Exception("WorkerProcess not found");
-                        }
-
                         $completed = $this->workerProcess($messages[$i]);
 
                         if($completed){
