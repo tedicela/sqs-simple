@@ -68,7 +68,7 @@ class SqsWorker{
                     for ($i = 0; $i < count($messages); $i++) {
                         
                         if($this->workerProcess == false){
-                            throw new Exception("WorkerProcess not found");
+                            throw new \Exception("WorkerProcess not found");
                         }
 
                         $completed = $this->workerProcess($messages[$i]);
@@ -108,7 +108,7 @@ class SqsWorker{
 
     private function getMessages($callback){
         if($this->SqsClient == null){
-            throw new Exception("No SQS client defined");
+            throw new \Exception("No SQS client defined");
         }
 
         $result = $this->SqsClient->receiveMessage([
@@ -135,7 +135,7 @@ class SqsWorker{
 
     private function setMessagesUnavailable($messages){
         if($this->SqsClient == null){
-            throw new Exception("No SQS client defined");
+            throw new \Exception("No SQS client defined");
         }
 
         $entries = [];
@@ -154,7 +154,7 @@ class SqsWorker{
 
     private function ackMessage($message){
         if($this->SqsClient == null){
-            throw new Exception("No SQS client defined");
+            throw new \Exception("No SQS client defined");
         }
 
         $result = $this->SqsClient->deleteMessage([
@@ -165,7 +165,7 @@ class SqsWorker{
 
     private function nackMessage($message){
         if($this->SqsClient == null){
-            throw new Exception("No SQS client defined");
+            throw new \Exception("No SQS client defined");
         }
 
         $result = $this->SqsClient->changeMessageVisibilityBatch([

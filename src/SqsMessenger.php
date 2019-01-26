@@ -38,7 +38,7 @@ class SqsMessenger{
     public function publish($queueUrl, $message, $messageAttributes=[], $delaySeconds=10){
         
         if($this->SqsClient == null){
-            throw new Exception("No SQS client defined");
+            throw new \Exception("No SQS client defined");
         }
 
         $params = [
