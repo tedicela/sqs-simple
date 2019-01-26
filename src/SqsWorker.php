@@ -39,13 +39,12 @@ class SqsWorker{
         }
     }
     
-    public function listen($queueUrl, $workerProcess=false){
+    public function listen($queueUrl, $workerProcess){
         
         $this->queueUrl = $queueUrl;
         
-        $this->workerProcess = $workerProcess;
-        if($this->workerProcess === false){
-            throw new \Exception("WorkerProcess not found");
+        if( !is_callable($workerProcess) ){
+            throw new \InvalidArgumentException("WorkerProcess not found");
         }
 
         $this->printHeader();
@@ -61,7 +60,7 @@ class SqsWorker{
                 
                 $this->out("Getting messages...");
                 //Step 1: GET MESSAGES:
-                $this->getMessages(function( $messages ){
+                $this->getMessages(function( $messages ) use($workerProcess){
                     
                     //Step 2: We should now MAKE MESSAGES NOT AVAILABLE for other workers:
                     $this->setMessagesUnavailable($messages);
@@ -69,14 +68,14 @@ class SqsWorker{
                     //Step 3: Should work these messages
                     for ($i = 0; $i < count($messages); $i++) {
                         
-                        $completed = $this->workerProcess($messages[$i]);
+                        $completed = $workerProcess($messages[$i]);
 
                         if($completed){
                             //Step 4.1: When messages finishes to get worked then we should DELETE MESSAGE from SQS
-                            $this->ackMessage($message);
+                            $this->ackMessage($messages[$i]);
                         }else{
                             //Step 4.2: If we can't elaborate the message then we should MAKE MESSAGE AVAILABLE to other workers who can
-                            $this->nackMessage($message);
+                            $this->nackMessage($messages[$i]);
                         }
 
                     }
