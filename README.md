@@ -111,3 +111,5 @@ $worker->listen($queueUrl, function($message){
 });
 ```
 
+# How to contribute
+If you are interested for adding new features you can open an issue (I'll try to be fast in adding it), or fork this project and create a Pull request(I'll will be happy to accept it).
