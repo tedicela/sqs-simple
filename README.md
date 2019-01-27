@@ -27,7 +27,7 @@ composer require tedicela/sqs-simple
 ## Use cases
 
 ### How to publish messages into an SQS Queue
-### Example:
+**Example**:
 ```php
 <?php
 
@@ -42,7 +42,8 @@ $AwsConfig = [
 ];
 $messenger = new SqsMessenger($AwsConfig);
 
-$messenger->WaitBeforeRetry = 1; //seconds
+// $messenger->RetryTimesOnFail = 2;
+// $messenger->WaitBeforeRetry = 1; //seconds
 
 $queue = "<Your queueUrl>";
 $message = "This is a message for SQS";
@@ -50,7 +51,7 @@ $messenger->publish( $queue, $message);
 ```
 
 ### Making a worker to listen for messages into an SQS Queue
-### Example:
+**Example**:
 ```php
 <?php
 
@@ -65,10 +66,11 @@ $AwsConfig = [
 ];
 $worker = new SqsWorker($AwsConfig);
 
-$worker->Sleep = 10;
-$worker->WaitTimeSeconds = 20;
-$worker->MaxNumberOfMessages = 1;
-$worker->VisibilityTimeout = 3600;
+// $worker->SqsClient = $ExistingSqsClient;
+// $worker->Sleep = 10;
+// $worker->WaitTimeSeconds = 20;
+// $worker->MaxNumberOfMessages = 1;
+// $worker->VisibilityTimeout = 3600;
 
 $queueUrl = "<Your queueUrl>";
 $worker->listen($queueUrl, function($message){
