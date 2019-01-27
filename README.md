@@ -1,8 +1,8 @@
-# sqs-simple
+# sqs-simple (PHP)
 PHP package for consuming AWS SQS queue in the simple way
 
 ## Description
-
+Inspired by the Rabbitmq PHP SDK I have made this PHP library that makes simple the usage of AWS Simple Queue Service. With just a few lines of codes you can make a worker that listens for messages into a queue. You can set parameters to tune costs(requests made on SQS). Also for publishing messages into a queue simple too.
 
 ## Requirements
 - php >=5.5.9
@@ -29,7 +29,7 @@ composer require tedicela/sqs-simple
 ### How to publish messages into an SQS queue
 AWS SQS charges you for every request you do on that service. So you can tune SqsMessenger attributes to get the most reliable service and with lower costs.
 
-**Example**:
+**Example** (check the comments for explanations):
 ```php
 <?php
 
@@ -57,7 +57,7 @@ $messenger->publish( $queue, $message);
 ### Making a worker to listen for messages into an SQS queue
 As it was explained above that AWS SQS charges you for every request that is done, so even in SqsWorker you can tune it's attributes to get the best effort with better costs. Tuning attributes to SqsWorker is important because the worker are the process that makes more requests than publishers.
 
-**Example**:
+**Example** (check the comments for explanations):
 ```php
 <?php
 
