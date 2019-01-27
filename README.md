@@ -26,7 +26,9 @@ composer require tedicela/sqs-simple
 
 ## Use cases
 
-### How to publish messages into an SQS Queue
+### How to publish messages into an SQS queue
+AWS SQS charges you for every request you do on that service. So you can tune SqsMessenger attributes to get the most reliable service and with lower costs.
+
 **Example**:
 ```php
 <?php
@@ -42,7 +44,9 @@ $AwsConfig = [
 ];
 $messenger = new SqsMessenger($AwsConfig);
 
+/* if a publish message request fails then it will retry again */
 // $messenger->RetryTimesOnFail = 2;
+/* seconds to wait after failed request to retry again */
 // $messenger->WaitBeforeRetry = 1; //seconds
 
 $queue = "<Your queueUrl>";
@@ -50,7 +54,9 @@ $message = "This is a message for SQS";
 $messenger->publish( $queue, $message);
 ```
 
-### Making a worker to listen for messages into an SQS Queue
+### Making a worker to listen for messages into an SQS queue
+As it was explained above that AWS SQS charges you for every request that is done, so even in SqsWorker you can tune it's attributes to get the best effort with better costs. Tuning attributes to SqsWorker is important because the worker are the process that makes more requests than publishers.
+
 **Example**:
 ```php
 <?php
@@ -58,6 +64,12 @@ $messenger->publish( $queue, $message);
 require 'vendor/autoload.php';
 use SqsSimple\SqsWorker;
 
+/*
+  You can pass the AWS configuration into constructor
+  but this is optional. If you don't pass this configuration 
+  you should set an authenticated SqsClient Object 
+  like in the comment below
+*/
 $AwsConfig = [
     'AWS_KEY'=>'', //You should put your AWS_KEY 
     'AWS_SECRET_KEY'=>'', //You should put your AWS_SECRET_KEY 
@@ -66,10 +78,21 @@ $AwsConfig = [
 ];
 $worker = new SqsWorker($AwsConfig);
 
+/*
+  You can set an already authenticated SqsClient Object
+  if set this you don't need to pass the AwsConfig above
+*/
 // $worker->SqsClient = $ExistingSqsClient;
+/* seconds to wait before checking again if no messages was found */
 // $worker->Sleep = 10;
+/* how many seconds with wait for messages in SQS to be available in one check */
 // $worker->WaitTimeSeconds = 20;
+/* how many messages to get from queue when the worker checks */
 // $worker->MaxNumberOfMessages = 1;
+/*    
+  After the worker get a message and starts elaborating it 
+  how many seconds the message should not be available to other workers
+*/
 // $worker->VisibilityTimeout = 3600;
 
 $queueUrl = "<Your queueUrl>";
