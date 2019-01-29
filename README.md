@@ -10,16 +10,7 @@ Inspired by the Rabbitmq PHP SDK I have made this PHP library that makes simple 
 ## Installation via composer
 You can add this library into your project using [Composer](https://getcomposer.org). If you don't have composer installed and want to install it then [download composer here](https://getcomposer.org/download/) and follow [how to install guide](https://getcomposer.org/doc/00-intro.md). 
 
-To add **sqs-simple** to your porject follow these steps:
-
-**Step 1** - add to `composer.json` this repository:
-```json
-"repositories": [
-      {"type": "vcs", "url": "git@github.com:tedicela/sqs-simple"}
-],
-```
-
-**Step 2** - excute on command line:
+To add **sqs-simple** to your porject just excute on command line:
 ```
 composer require tedicela/sqs-simple
 ```
