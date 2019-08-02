@@ -99,6 +99,12 @@ $worker->listen($queueUrl, function($message){
     */
     return true;
     
+},
+function($exceptionMessage, $errorCounter){ // $errorHandlerCallback - this is optional as parameter
+	/*
+		$exceptionMessage is the $e->getMessage()
+		$errorCounter - how many times in a row errors occured, if it's 5 then listening will stop
+	*/
 });
 ```
 
