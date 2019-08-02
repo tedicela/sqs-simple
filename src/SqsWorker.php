@@ -39,12 +39,16 @@ class SqsWorker{
         }
     }
     
-    public function listen($queueUrl, $workerProcess){
+    public function listen($queueUrl, $workerProcess, $errorHandlerCallback = null ){
         
         $this->queueUrl = $queueUrl;
         
         if( !is_callable($workerProcess) ){
             throw new \InvalidArgumentException("WorkerProcess not found");
+        }
+        
+        if( $errorHandlerCallback != null && !is_callable($errorHandlerCallback) ){
+            throw new \InvalidArgumentException("errorHandlerCallback is not a callable function");
         }
 
         $this->printHeader();
@@ -90,10 +94,13 @@ class SqsWorker{
                     $checkForMessages = false;
                 }
                 $errorCounter++;
-
-                var_dump( $e->getMessage() );
+                
                 // output error message if fails
                 error_log($e->getMessage());
+                
+                if( $errorHandlerCallback != null ){
+					$errorHandlerCallback($e->getMessage(), $errorCounter);
+				}
             }
             $counterCheck++;
             
