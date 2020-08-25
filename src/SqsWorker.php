@@ -88,22 +88,19 @@ class SqsWorker
             try {
                 
                 $this->out("Getting messages...");
-                //Step 1: GET MESSAGES:
+                //Step 1: Get messages that are marked as unavailable upon receiving
                 $this->getMessages(function ($messages) use ($workerProcess) {
                     
-                    //Step 2: We should now MAKE MESSAGES NOT AVAILABLE for other workers:
-                    $this->setMessagesUnavailable($messages);
-                    
-                    //Step 3: Should work these messages
+                    //Step 2: Should work these messages
                     for ($i = 0; $i < count($messages); $i++) {
                         
                         $completed = $workerProcess($messages[$i]);
                         
                         if ($completed) {
-                            //Step 4.1: When messages finishes to get worked then we should DELETE MESSAGE from SQS
+                            //Step 3.1: When messages finishes to get worked then we should DELETE MESSAGE from SQS
                             $this->ackMessage($messages[$i]);
                         } else {
-                            //Step 4.2: If we can't elaborate the message then we should MAKE MESSAGE AVAILABLE to other workers who can
+                            //Step 3.2: If we can't elaborate the message then we should MAKE MESSAGE AVAILABLE to other workers who can
                             $this->nackMessage($messages[$i]);
                         }
                         
@@ -173,6 +170,7 @@ class SqsWorker
             'MessageAttributeNames' => ['All'],
             'QueueUrl'              => $this->queueUrl, // REQUIRED
             'WaitTimeSeconds'       => $this->WaitTimeSeconds,
+            'VisibilityTimeout'     => $this->VisibilityTimeout,
         ]);
         
         //Step 1: GET MESSAGES:
@@ -187,32 +185,6 @@ class SqsWorker
             sleep($sleep);
         }
         
-    }
-    
-    /**
-     * Set messages unavailable
-     *
-     * @param $messages
-     * @throws \Exception
-     */
-    private function setMessagesUnavailable($messages)
-    {
-        if ($this->SqsClient == null) {
-            throw new \Exception("No SQS client defined");
-        }
-        
-        $entries = [];
-        for ($i = 0; $i < count($messages); $i++) {
-            array_push($entries, [
-                'Id'                => 'unique_is_msg' . $i, // REQUIRED
-                'ReceiptHandle'     => $messages[$i]['ReceiptHandle'], // REQUIRED
-                'VisibilityTimeout' => $this->VisibilityTimeout
-            ]);
-        }
-        $result = $this->SqsClient->changeMessageVisibilityBatch([
-            'Entries'  => $entries,
-            'QueueUrl' => $this->queueUrl
-        ]);
     }
     
     /**
