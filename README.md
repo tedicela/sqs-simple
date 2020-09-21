@@ -42,10 +42,11 @@ $messenger = new SqsMessenger($AwsConfig);
 
 $queue = "<Your queueUrl>";
 $message = "This is a message for SQS";
+$messageAttributes = [];
 $delaySeconds = 10; // (Not FIFO Queue type) - The time in seconds that the delivery of all messages in the queue will be delayed. An integer from 0 to 900 (15 minutes). The default for this attribute is 0 (zero).
 $messageGroupId = ''; // (FIFO Queue type) - The tag that specifies that a message belongs to a specific message group. Messages that belong to the same message group are always processed one by one, in a strict order relative to the message group (however, messages that belong to different message groups might be processed out of order).
 $messageDeduplicationId = ''; // (FIFO Queue type) - The token used for deduplication of sent messages. If a message with a particular message deduplication ID is sent successfully, any messages sent with the same message deduplication ID are accepted successfully but aren't delivered during the 5-minute deduplication interval. The queue should either have ContentBasedDeduplication enabled or MessageDeduplicationId provided explicitly.
-$messenger->publish( $queue, $message, $delaySeconds, $messageGroupId, $messageDeduplicationId);
+$messenger->publish( $queue, $message, $messageAttributes, $delaySeconds, $messageGroupId, $messageDeduplicationId);
 ```
 
 ### Making a worker to listen for messages into an SQS queue (long lived worker)
