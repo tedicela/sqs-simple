@@ -4,54 +4,10 @@ namespace SqsSimple;
 
 use Aws\Exception\AwsException;
 
-class SqsMessenger
-{
-    
-    public $SqsClient        = null;
+class SqsMessenger extends SqsBase
+{    
     public $RetryTimesOnFail = 2;
-    public $WaitBeforeRetry  = 1;
-    
-    /**
-     * SqsMessenger constructor.
-     * @param array $AwsConfig
-     */
-    public function __construct(array $AwsConfig)
-    {
-        $credentials  = new \Aws\Credentials\Credentials($AwsConfig['AWS_KEY'], $AwsConfig['AWS_SECRET_KEY']);
-        $sharedConfig = [
-            'credentials' => $credentials,
-            'region'      => $AwsConfig['AWS_REGION'],
-            'version'     => $AwsConfig['API_VERSION'],
-        ];
-        
-        // Create an SDK class used to share configuration across clients.
-        $sdk = new \Aws\Sdk($sharedConfig);
-        
-        // Create an Amazon SQS client using the shared configuration data.
-        $this->SqsClient = $sdk->createSqs();
-    }
-    
-    /**
-     * Set client
-     *
-     * @param $SqsClient
-     */
-    public function setClient($SqsClient)
-    {
-        $this->SqsClient = $SqsClient;
-    }
-    
-    /**
-     * Set params
-     *
-     * @param array $params
-     */
-    public function setParams(array $params)
-    {
-        foreach ($params as $param => $value) {
-            $this->{$param} = $value;
-        }
-    }
+    public $WaitBeforeRetry  = 1;    
     
     /**
      * Publish

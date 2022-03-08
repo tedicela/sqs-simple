@@ -4,56 +4,13 @@ namespace SqsSimple;
 
 use Aws\Exception\AwsException;
 
-class SqsWorker
-{
-    public $SqsClient           = null;
+class SqsWorker extends SqsBase
+{    
     public $Sleep               = 10;
     public $WaitTimeSeconds     = 20;
     public $MaxNumberOfMessages = 1;
     public $VisibilityTimeout   = 3600;
-    public $workerProcess       = false;
-    
-    /**
-     * SqsWorker constructor.
-     * @param array $AwsConfig
-     */
-    public function __construct(array $AwsConfig)
-    {
-        $credentials  = new \Aws\Credentials\Credentials($AwsConfig['AWS_KEY'], $AwsConfig['AWS_SECRET_KEY']);
-        $sharedConfig = [
-            'credentials' => $credentials,
-            'region'      => $AwsConfig['AWS_REGION'],
-            'version'     => $AwsConfig['API_VERSION'],
-        ];
-        
-        // Create an SDK class used to share configuration across clients.
-        $sdk = new \Aws\Sdk($sharedConfig);
-        
-        // Create an Amazon SQS client using the shared configuration data.
-        $this->SqsClient = $sdk->createSqs();
-    }
-    
-    /**
-     * Set client
-     *
-     * @param $SqsClient
-     */
-    public function setClient($SqsClient)
-    {
-        $this->SqsClient = $SqsClient;
-    }
-    
-    /**
-     * Set params
-     *
-     * @param array $params
-     */
-    public function setParams(array $params)
-    {
-        foreach ($params as $param => $value) {
-            $this->{$param} = $value;
-        }
-    }
+    public $workerProcess       = false;    
     
     /**
      * Listener
@@ -199,7 +156,7 @@ class SqsWorker
             throw new \Exception("No SQS client defined");
         }
         
-        $result = $this->SqsClient->deleteMessage([
+        $this->SqsClient->deleteMessage([
             'QueueUrl'      => $this->queueUrl, // REQUIRED
             'ReceiptHandle' => $message['ReceiptHandle'], // REQUIRED
         ]);
@@ -217,7 +174,7 @@ class SqsWorker
             throw new \Exception("No SQS client defined");
         }
         
-        $result = $this->SqsClient->changeMessageVisibility([
+        $this->SqsClient->changeMessageVisibility([
             // VisibilityTimeout is required
             'VisibilityTimeout' => 0,
             'QueueUrl'          => $this->queueUrl, // REQUIRED
